@@ -1,52 +1,58 @@
-import { useEffect, useState } from "react";
 import SearchBar from "./SearchBar";
+import { useState } from "react";
 
+const Table = ({ searchState, setSearchState, userList, originalUsers, users, setUsers }) => {
 
-const Table = () => {
+    const [order, setOrder] = useState('asc');
 
-    const [users, setUsers] = useState([])
+    const sorting = (col) => {
 
-    const [searchState, setSearchState] = useState('');
+        if (order === 'asc') {
+            const sorted = [...users].sort((a, b) => {
+                return a[col].toLowerCase() > b[col].toLowerCase() ? 1 : -1
+            })
 
-    useEffect(() => {
+            setUsers(sorted);
+            setOrder('dsc')
+        }
 
-        fetch('https://jsonplaceholder.typicode.com/users')
-            .then(response => response.json())
-            .then(json => setUsers(json))
+        else if (order === 'dsc') {
+            const sorted = [...users].sort((a, b) => {
+                return a[col].toLowerCase() < b[col].toLowerCase() ? 1 : -1
+            })
 
-    }, [])
+            setUsers(sorted);
+            setOrder('original')
+        }
 
-    const filterName = users.filter(u => {
-        return u.username.toLowerCase().includes(searchState.toLowerCase())
-    })
+        else {
+            setUsers(originalUsers);
+            setOrder('asc')
+        }
 
-    const userList = filterName.map((u, index) => 
-        <tr key={u.id} className={`table__values ${index % 2 !== 0 ? 'light' : ''}`} >
-            <td>{u.username}</td>
-            <td>{u.email}</td>
-            <td>{u.address.street}</td>
-        </tr>
-    )
+    }
 
-    return(
+    return (
         <div className="container">
-            
+
             <SearchBar searchState={searchState} setSearchState={setSearchState} />
 
             <table className="table">
                 <tbody>
                     <tr className="table__titles">
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Street</th>
+                        <th onClick={() => sorting('username')}>Username</th>
+                        <th onClick={() => sorting('email')}>Email</th>
+                        <th onClick={() => sorting(`address`)}>Street</th>
                     </tr>
 
                     {userList}
+                    {!userList.length && <tr><th>not found</th></tr> }
                 </tbody>
             </table>
+
         </div>
     )
 
-}   
+}
 
 export default Table;
