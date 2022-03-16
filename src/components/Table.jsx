@@ -42,7 +42,7 @@ const Table = ({ searchState, setSearchState, userList, originalUsers, users, se
                     <tr className="table__titles">
                         <th onClick={() => sorting('username')}>Username</th>
                         <th onClick={() => sorting('email')}>Email</th>
-                        <th onClick={() => sorting(`address`)}>Street</th>
+                        <th onClick={() => sorting(`street`)}>Street</th>
                     </tr>
 
                     {userList}

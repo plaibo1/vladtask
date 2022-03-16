@@ -1,6 +1,8 @@
 import './sass/App.sass';
 import Table from './components/Table';
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import { getUsers } from './redux/table-reducer';
 
 function App() {
 
@@ -9,16 +11,18 @@ function App() {
   
   const [originalUsers, setOriginalUsers] = useState([])
 
+
+  const dispatch = useDispatch()
+  useEffect(() => dispatch(getUsers()), [])
+
+
+  const usersFromStore = useSelector(state => state.tablePage.users)
+
   useEffect(() => {
+    setUsers(usersFromStore)
+    setOriginalUsers(usersFromStore)
+  }, [usersFromStore])
 
-    fetch('https://jsonplaceholder.typicode.com/users')
-      .then(response => response.json())
-      .then(json => {
-        setUsers(json)
-        setOriginalUsers(json)
-      })
-
-  }, [])
 
   const filterName = users.filter(u => {
     return u.username.toLowerCase().includes(searchState.toLowerCase())
